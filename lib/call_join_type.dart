@@ -1,0 +1,2 @@
+
+enum CallJoinType { teamsLink, groupId }

@@ -4,12 +4,9 @@ A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/to/develop-plugins),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+to add plugin to your app , add this in your pubspec.yaml 
+  
+    azure_calling:
+       git: https://github.com/SmartMindSYSCoder/sm_azure_calling.git
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+Please check the example to start using the plugin

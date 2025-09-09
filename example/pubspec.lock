@@ -12,9 +12,11 @@ packages:
   azure_calling:
     dependency: "direct main"
     description:
-      path: ".."
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: cf45b9a4a9970c651e6f86fc78a8b976099e2cfe
+      url: "https://github.com/SmartMindSYSCoder/sm_azure_calling.git"
+    source: git
     version: "0.0.1"
   boolean_selector:
     dependency: transitive

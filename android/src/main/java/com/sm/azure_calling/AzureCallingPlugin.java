@@ -26,6 +26,8 @@ import com.azure.android.communication.ui.calling.models.CallCompositeErrorCode;
 import com.azure.android.communication.ui.calling.models.CallCompositeGroupCallLocator;
 import com.azure.android.communication.ui.calling.models.CallCompositeJoinLocator;
 import com.azure.android.communication.ui.calling.models.CallCompositeLocalOptions;
+import com.azure.android.communication.ui.calling.models.CallCompositeMultitaskingOptions;
+
 import com.azure.android.communication.ui.calling.models.CallCompositeSetupScreenViewData;
 import com.azure.android.communication.ui.calling.models.CallCompositeTeamsMeetingLinkLocator;
 import java.util.UUID;
@@ -154,6 +156,8 @@ public class AzureCallingPlugin implements
             .applicationContext(applicationContext)   // <-- use app context here
             .credential(credential)
             .displayName(displayName)
+            .multitasking(new CallCompositeMultitaskingOptions(true,true))
+
             .build();
 
     callComposite.addOnErrorEventHandler(e -> {

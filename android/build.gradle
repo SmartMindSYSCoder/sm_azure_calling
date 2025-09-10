@@ -43,7 +43,7 @@ android {
     dependencies {
         testImplementation("junit:junit:4.13.2")
         testImplementation("org.mockito:mockito-core:5.0.0")
-        implementation("com.azure.android:azure-communication-ui-calling:+")
+        implementation("com.azure.android:azure-communication-ui-calling:1.13.0")
 
     }
 

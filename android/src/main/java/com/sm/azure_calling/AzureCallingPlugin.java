@@ -31,6 +31,15 @@ import com.azure.android.communication.ui.calling.models.CallCompositeMultitaski
 import com.azure.android.communication.ui.calling.models.CallCompositeSetupScreenViewData;
 import com.azure.android.communication.ui.calling.models.CallCompositeTeamsMeetingLinkLocator;
 import java.util.UUID;
+
+
+import android.view.Window;
+
+import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+
 public class AzureCallingPlugin implements
         FlutterPlugin,
         MethodChannel.MethodCallHandler,
@@ -178,6 +187,19 @@ public class AzureCallingPlugin implements
             setCameraOn(cameraOn).
             setMicrophoneOn(microphoneOn).
             setCallScreenOptions(callScreenOptions);
+
+
+
+    Window window = activity.getWindow();
+    WindowCompat.setDecorFitsSystemWindows(window, true);
+    WindowInsetsControllerCompat ic =
+            WindowCompat.getInsetsController(window, window.getDecorView());
+    if (ic != null) {
+      ic.show(WindowInsetsCompat.Type.systemBars());
+      ic.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE);
+    }
+    window.setStatusBarColor(ContextCompat.getColor(activity, android.R.color.black));
+    window.setNavigationBarColor(ContextCompat.getColor(activity, android.R.color.black));
 
 
     // Launch must use an Activity; do it on UI thread for safety

@@ -1,6 +1,6 @@
 name: azure_calling
 description: "A new Flutter project."
-version: 0.0.5
+version: 0.0.6
 homepage:
 
 environment:
@@ -37,8 +37,8 @@ flutter:
       android:
         package: com.sm.azure_calling
         pluginClass: AzureCallingPlugin
-      ios:
-        pluginClass: AzureCallingPlugin
+#      ios:
+#        pluginClass: AzureCallingPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

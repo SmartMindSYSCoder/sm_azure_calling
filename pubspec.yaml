@@ -1,6 +1,10 @@
 name: azure_calling
 description: "A new Flutter project."
+<<<<<<< HEAD
 version: 0.0.6
+=======
+version: 0.0.7
+>>>>>>> 086b577f9f0494d0d0f680d08221b9ece76b8070
 homepage:
 
 environment:

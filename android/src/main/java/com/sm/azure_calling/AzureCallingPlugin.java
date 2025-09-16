@@ -3,6 +3,8 @@ package com.sm.azure_calling;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.app.ActivityManager;
+
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -53,6 +55,7 @@ public class AzureCallingPlugin implements
   private MethodChannel channel;
   private Context applicationContext;
   private Activity activity;
+  private CallComposite callComposite;
 
   private Application.ActivityLifecycleCallbacks lifecycleCallbacks;
 
@@ -65,15 +68,22 @@ public class AzureCallingPlugin implements
 
   // ActivityAware
   @Override public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) { activity = binding.getActivity(); }
-  @Override public void onDetachedFromActivityForConfigChanges() { activity = null; }
+  @Override public void onDetachedFromActivityForConfigChanges() {
+
+    activity = null; }
   @Override public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) { activity = binding.getActivity(); }
-  @Override public void onDetachedFromActivity() { activity = null; }
+  @Override public void onDetachedFromActivity() {
+    if (callComposite != null) { callComposite.dismiss(); }
+
+    activity = null; }
 
   @Override
   public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
     channel.setMethodCallHandler(null);
     channel = null;
     applicationContext = null;
+    if (callComposite != null) { callComposite.dismiss(); }
+
   }
 
   @Override
@@ -248,6 +258,84 @@ public class AzureCallingPlugin implements
     return Math.round(dp * c.getResources().getDisplayMetrics().density);
   }
 
+
+
+  private void hideAcsTaskFromRecentsRobust(Context ctx) {
+    final ActivityManager am = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+    if (am == null) return;
+
+    final String[] candidateClassNames = new String[] {
+            // Try common ACS class names across versions. Adjust if your merged manifest shows a different one.
+            "com.azure.android.communication.ui.calling.presentation.activity.CallCompositeActivity",
+            "com.azure.android.communication.ui.calling.presentation.CallCompositeActivity"
+    };
+    final String[] candidatePackageHints = new String[] {
+            "azure", "communication", "calling", "acs"
+    };
+
+    final int[] tries = {0};
+    final Runnable r = new Runnable() {
+      @Override public void run() {
+        tries[0]++;
+
+        boolean changed = false;
+
+        for (ActivityManager.AppTask t : am.getAppTasks()) {
+          ActivityManager.RecentTaskInfo info = t.getTaskInfo();
+          if (info == null) continue;
+
+          String baseCls = info.baseActivity != null ? info.baseActivity.getClassName() : null;
+          String topCls  = info.topActivity  != null ? info.topActivity.getClassName()  : null;
+          String basePkg = info.baseActivity != null ? info.baseActivity.getPackageName() : null;
+
+          // Log what we see (one-time when first try or if you want always, keep this)
+          if (tries[0] <= 3) {
+            Log.d("AzureCallingPlugin",
+                    "Task check: base=" + baseCls + " top=" + topCls + " pkg=" + basePkg);
+          }
+
+          boolean looksLikeAcs =
+                  // 1) exact class match (best)
+                  matchesAny(baseCls, candidateClassNames) || matchesAny(topCls, candidateClassNames)
+                          // 2) package hint match (fallback)
+                          || containsAnyIgnoreCase(basePkg, candidatePackageHints)
+                          || containsAnyIgnoreCase(baseCls, candidatePackageHints)
+                          || containsAnyIgnoreCase(topCls,  candidatePackageHints);
+
+          if (looksLikeAcs) {
+            try {
+              t.setExcludeFromRecents(true);
+              changed = true;
+              Log.i("AzureCallingPlugin", "✓ Marked ACS task excluded from recents: base=" + baseCls);
+            } catch (Throwable ex) {
+              Log.w("AzureCallingPlugin", "setExcludeFromRecents failed: " + ex);
+            }
+          }
+        }
+
+        // Retry briefly because ACS may create/mutate its task after launch.
+        if (!changed && tries[0] < 12) { // ~2.4s total
+          new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(this, 200);
+        }
+      }
+
+      private boolean matchesAny(String value, String[] candidates) {
+        if (value == null) return false;
+        for (String c : candidates) if (value.equals(c)) return true;
+        return false;
+      }
+      private boolean containsAnyIgnoreCase(String value, String[] needles) {
+        if (value == null) return false;
+        String v = value.toLowerCase();
+        for (String n : needles) if (v.contains(n)) return true;
+        return false;
+      }
+    };
+
+    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(r, 200);
+  }
+
+
   // --- Start ACS call ---
   private void startCall(
           String token,
@@ -288,7 +376,7 @@ public class AzureCallingPlugin implements
       Log.d("AzureCallingPlugin", "AcsEdgeSafe theme applied (id=" + themeId + ")");
     }
 
-    CallComposite callComposite = builder.build();
+     callComposite = builder.build();
 
     callComposite.addOnErrorEventHandler(e -> {
       Log.e("ACS_UI", "Join error: " + e.getErrorCode(), e.getCause());
@@ -325,6 +413,10 @@ public class AzureCallingPlugin implements
 
     installLifecycleGuard();
 
-    activity.runOnUiThread(() -> callComposite.launch(activity, locator, localOptions));
+    activity.runOnUiThread(() -> {
+      callComposite.launch(activity, locator, localOptions);
+//      hideAcsTaskFromRecentsRobust(applicationContext);
+    });
+
   }
 }

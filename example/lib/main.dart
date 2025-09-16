@@ -32,10 +32,10 @@ class _MyAppState extends State<MyApp> {
 
   final _azureCalling = AzureCalling();
 
-  bool skipSetupScreen = false, cameraOn = false, microphoneOn = false;
+  bool skipSetupScreen = true, cameraOn = false, microphoneOn = false;
 
   // NEW: which join type is selected
-  CallJoinType _joinType = CallJoinType.teamsLink;
+  CallJoinType _joinType = CallJoinType.groupId;
 
   // ---------- validators ----------
 

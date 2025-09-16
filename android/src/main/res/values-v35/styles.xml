@@ -1,0 +1,36 @@
+<!-- res/values/styles.xml -->
+<resources>
+    <style name="AcsEdgeSafe" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+
+        <!-- Keep overlays, but do not force background insets -->
+        <item name="bottomSheetDialogTheme">@style/AcsBottomSheetDialog</item>
+        <item name="materialAlertDialogTheme">@style/AcsAlertDialog</item>
+
+        <!-- Optional (helps contrast on gesture nav) -->
+        <item name="android:enforceNavigationBarContrast">false</item>
+    </style>
+
+    <style name="AcsBottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <!-- Let IME resize content; no artificial insets -->
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <!-- Keep the default sheet widget; do not add padding/insets here -->
+        <item name="bottomSheetStyle">@style/AcsBottomSheet</item>
+        <item name="android:paddingBottom">200dp</item>
+
+    </style>
+
+    <style name="AcsAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <!-- No backgroundInsetBottom here either -->
+    </style>
+
+    <style name="AcsBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+        <!-- Don’t hardcode huge padding; let insets flow -->
+        <item name="android:fitsSystemWindows">false</item>
+        <item name="android:paddingBottom">200dp</item>
+
+    </style>
+</resources>

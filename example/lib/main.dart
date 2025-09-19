@@ -52,6 +52,7 @@ class _MyAppState extends State<MyApp> {
     _groupIdCtrl.dispose();
     _meetingTitleCtrl.dispose();
     _nameCtrl.dispose();
+    _azureCalling.endCall();
     super.dispose();
   }
 

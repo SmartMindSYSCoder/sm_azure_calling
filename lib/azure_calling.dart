@@ -6,7 +6,7 @@ import 'call_join_type.dart';
 
 class AzureCalling {
 
-  final methodChannel = const MethodChannel('azure_calling');
+  final _methodChannel = const MethodChannel('azure_calling');
 
 
 
@@ -16,12 +16,12 @@ class AzureCalling {
 
     if(callType ==CallJoinType.groupId && isValidGroupId(teamsLinkOrGroupId) ){
 
-      await methodChannel.invokeMethod<void>('startCall',{"token":token,"meetingLink":"","groupId":teamsLinkOrGroupId,"displayName":displayName,"title":title,"subTitle":subTitle,"skipSetupScreen":skipSetupScreen,"cameraOn":cameraOn,"microphoneOn":microphoneOn});
+      await _methodChannel.invokeMethod<void>('startCall',{"token":token,"meetingLink":"","groupId":teamsLinkOrGroupId,"displayName":displayName,"title":title,"subTitle":subTitle,"skipSetupScreen":skipSetupScreen,"cameraOn":cameraOn,"microphoneOn":microphoneOn});
 
 
     }
   else  if(callType ==CallJoinType.teamsLink && isValidTeamsLink(teamsLinkOrGroupId) ){
-      await methodChannel.invokeMethod<void>('startCall',{"token":token,"meetingLink":teamsLinkOrGroupId,"groupId":"","displayName":displayName,"title":title,"subTitle":subTitle,"skipSetupScreen":skipSetupScreen,"cameraOn":cameraOn,"microphoneOn":microphoneOn});
+      await _methodChannel.invokeMethod<void>('startCall',{"token":token,"meetingLink":teamsLinkOrGroupId,"groupId":"","displayName":displayName,"title":title,"subTitle":subTitle,"skipSetupScreen":skipSetupScreen,"cameraOn":cameraOn,"microphoneOn":microphoneOn});
 
 
     }
@@ -35,12 +35,12 @@ return;
   }
 
   Future<void> endCall() async {
-   await methodChannel.invokeMethod<void>('endCall');
+   await _methodChannel.invokeMethod<void>('endCall');
   }
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('endCall');
-    return version;
-  }
+  // Future<String?> getPlatformVersion() async {
+  //   final version = await _methodChannel.invokeMethod<String>('endCall');
+  //   return version;
+  // }
 
 
   /// Checks if [groupId] is a valid UUID (ACS Group Call Id).

@@ -126,6 +126,19 @@ public class AzureCallingPlugin implements
       return;
     }
 
+    else if("endCall".equals(call.method)){
+
+
+      try {
+        endCall();
+        result.success(null);
+      } catch (Exception e) {
+        result.error("END_CALL_FAILED", e.getMessage(), null);
+      }
+      return;
+
+    }
+
     result.notImplemented();
   }
 
@@ -419,4 +432,10 @@ public class AzureCallingPlugin implements
     });
 
   }
+
+  private void endCall(){
+    if (callComposite != null) { callComposite.dismiss(); }
+
+  }
+
 }

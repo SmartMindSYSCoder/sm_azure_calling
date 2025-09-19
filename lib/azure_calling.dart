@@ -34,8 +34,11 @@ return;
 
   }
 
+  Future<void> endCall() async {
+   await methodChannel.invokeMethod<void>('endCall');
+  }
   Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
+    final version = await methodChannel.invokeMethod<String>('endCall');
     return version;
   }
 
